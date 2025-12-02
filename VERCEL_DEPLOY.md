@@ -11,6 +11,8 @@ Vercel 대시보드에서 다음 환경 변수들을 설정해야 합니다:
 - `AWS_SECRET_ACCESS_KEY` - AWS 시크릿 액세스 키
 - `AWS_REGION` - AWS 리전 (예: `ap-northeast-2`)
 - `AWS_S3_BUCKET_NAME` - S3 버킷 이름 (예: `kanaria-prototype-test`)
+- `AUTH_USERNAME` - 로그인 아이디 (기본값: `admin`)
+- `AUTH_PASSWORD` - 로그인 비밀번호 (기본값: `kanaria-test-izen`)
 
 #### 공개 환경 변수 (클라이언트 사이드)
 - `NEXT_PUBLIC_AWS_REGION` - AWS 리전 (예: `ap-northeast-2`)
@@ -57,6 +59,7 @@ git commit -m "Initial commit"
    - 프로젝트 설정 → Environment Variables
    - 위의 환경 변수들을 모두 추가
    - **중요**: Production, Preview, Development 모두에 설정
+   - 인증 정보(`AUTH_USERNAME`, `AUTH_PASSWORD`)는 보안상 Production에만 설정하거나, 모두 동일하게 설정 가능
 
 4. **배포 설정 확인**
    - Framework Preset: Next.js (자동 감지)
@@ -71,6 +74,8 @@ git commit -m "Initial commit"
 ### 5. 배포 후 확인 사항
 
 - [ ] 환경 변수가 올바르게 설정되었는지 확인
+- [ ] 로그인 페이지가 정상적으로 표시되는지 확인
+- [ ] 인증 후 메인 페이지 접근이 가능한지 확인
 - [ ] API 라우트 (`/api/s3/list`)가 정상 작동하는지 확인
 - [ ] 이미지가 정상적으로 로드되는지 확인
 - [ ] S3 파일 목록이 정상적으로 표시되는지 확인

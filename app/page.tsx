@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
 
 interface S3File {
   Key: string;
@@ -9,6 +10,7 @@ interface S3File {
 }
 
 export default function Home() {
+  const router = useRouter();
   const [activeCategory, setActiveCategory] = useState<"photos" | "json">(
     "photos"
   );
@@ -234,9 +236,43 @@ export default function Home() {
     return () => document.removeEventListener("keydown", handleEscape);
   }, [modalImage]);
 
+  const handleLogout = async () => {
+    try {
+      await fetch("/api/auth/logout", { method: "POST" });
+      router.push("/login");
+      router.refresh();
+    } catch (error) {
+      console.error("Logout error:", error);
+    }
+  };
+
   return (
     <>
-      <h1>Reliability Test 📸</h1>
+      <div
+        style={{
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "center",
+          marginBottom: "20px",
+        }}
+      >
+        <h1 style={{ margin: 0 }}>Reliability Test 📸</h1>
+        <button
+          onClick={handleLogout}
+          style={{
+            padding: "8px 16px",
+            backgroundColor: "#666",
+            color: "white",
+            border: "none",
+            borderRadius: "5px",
+            cursor: "pointer",
+            fontSize: "14px",
+            fontWeight: 600,
+          }}
+        >
+          로그아웃
+        </button>
+      </div>
 
       {/* Category Tabs */}
       <div className="category-tabs">
