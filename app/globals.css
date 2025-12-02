@@ -1,0 +1,291 @@
+body {
+  font-family: sans-serif;
+  margin: 20px;
+}
+
+h1 {
+  text-align: center;
+}
+
+.controls {
+  max-width: 800px;
+  margin: 20px auto;
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+
+.search-box {
+  flex: 1;
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  font-size: 14px;
+}
+
+.refresh-btn {
+  padding: 10px 20px;
+  background-color: #4CAF50;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 14px;
+  transition: background-color 0.3s;
+}
+
+.refresh-btn:hover {
+  background-color: #45a049;
+}
+
+.refresh-btn:disabled {
+  background-color: #ccc;
+  cursor: not-allowed;
+}
+
+#image-container {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  gap: 20px;
+  padding: 20px;
+}
+
+#image-container.centered {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 400px;
+}
+
+.image-card {
+  background: #f8f8f8;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+  transition: transform 0.2s;
+  cursor: pointer;
+}
+
+.image-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 6px 12px rgba(0,0,0,0.15);
+}
+
+/* 모달 스타일 */
+.modal {
+  display: none;
+  position: fixed;
+  z-index: 1000;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0,0,0,0.9);
+  cursor: zoom-out;
+}
+
+.modal.active {
+  display: block;
+}
+
+.modal-content {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 90vw;
+  height: 90vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.modal-image {
+  width: 100%;
+  height: calc(100% - 60px);
+  object-fit: contain;
+}
+
+.modal-info {
+  color: white;
+  padding: 10px;
+  text-align: center;
+  background: rgba(0,0,0,0.5);
+  border-radius: 5px;
+  margin-top: 10px;
+}
+
+.close-btn {
+  position: absolute;
+  top: 20px;
+  right: 35px;
+  color: #f1f1f1;
+  font-size: 40px;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.close-btn:hover {
+  color: #fff;
+}
+
+.image-card img {
+  width: 100%;
+  height: 200px;
+  object-fit: cover;
+  display: block;
+}
+
+.image-info {
+  padding: 10px;
+  background: white;
+}
+
+.image-date {
+  font-size: 12px;
+  color: #666;
+  margin-bottom: 5px;
+}
+
+.image-name {
+  font-size: 14px;
+  color: #333;
+  font-weight: 500;
+  word-break: break-all;
+}
+
+/* 카테고리 탭 스타일 */
+.category-tabs {
+  max-width: 800px;
+  margin: 20px auto;
+  display: flex;
+  gap: 0;
+  border-bottom: 2px solid #ddd;
+}
+
+.category-tab {
+  padding: 12px 30px;
+  background: #f5f5f5;
+  border: none;
+  border-top-left-radius: 5px;
+  border-top-right-radius: 5px;
+  cursor: pointer;
+  font-size: 16px;
+  font-weight: 500;
+  color: #666;
+  transition: all 0.3s;
+}
+
+.category-tab:hover {
+  background: #e8e8e8;
+}
+
+.category-tab.active {
+  background: white;
+  color: #4CAF50;
+  border-bottom: 2px solid white;
+  margin-bottom: -2px;
+}
+
+/* JSON 파일 리스트 스타일 */
+#json-container {
+  display: none;
+  max-width: 1000px;
+  margin: 20px auto;
+  padding: 20px;
+}
+
+#json-container.centered {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 400px;
+}
+
+#json-container.active {
+  display: block;
+}
+
+.json-file-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 15px 20px;
+  background: #f8f8f8;
+  border-radius: 5px;
+  margin-bottom: 10px;
+  transition: all 0.2s;
+}
+
+.json-file-item:hover {
+  background: #e8e8e8;
+  transform: translateX(5px);
+}
+
+.json-file-name {
+  font-size: 14px;
+  color: #333;
+  font-family: monospace;
+  flex: 1;
+}
+
+.json-file-info {
+  font-size: 12px;
+  color: #666;
+  margin-right: 20px;
+}
+
+.download-btn {
+  padding: 8px 20px;
+  background-color: #2196F3;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 14px;
+  transition: background-color 0.3s;
+}
+
+.download-btn:hover {
+  background-color: #1976D2;
+}
+
+.download-all-btn {
+  padding: 12px 30px;
+  background-color: #4CAF50;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 16px;
+  font-weight: 600;
+  margin: 20px auto;
+  display: block;
+  transition: background-color 0.3s;
+}
+
+.download-all-btn:hover {
+  background-color: #45a049;
+}
+
+.download-all-btn:disabled {
+  background-color: #ccc;
+  cursor: not-allowed;
+}
+
+.centered-message {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 20px;
+  color: #999;
+  font-size: 18px;
+  text-align: center;
+}
+
+.centered-message .icon {
+  font-size: 48px;
+}
+
