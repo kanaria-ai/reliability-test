@@ -256,7 +256,7 @@ export default function Home() {
           marginBottom: "20px",
         }}
       >
-        <h1 style={{ margin: 0 }}>Reliability Test 📸</h1>
+        <h1 style={{ margin: 0 }}>카나리아 테스트 뷰어</h1>
         <button
           onClick={handleLogout}
           style={{
@@ -363,7 +363,7 @@ export default function Home() {
             fontSize: "14px",
           }}
         >
-          {isLoading ? "Loading..." : "Show"}
+          {isLoading ? "Loading..." : "조회하기"}
         </button>
         <button
           id="date-reset-btn"

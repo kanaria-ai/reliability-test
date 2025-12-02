@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "Reliability Test",
+  title: "카나리아 테스트 뷰어",
   description: "S3 버킷의 이미지 및 JSON 파일을 실시간으로 조회하는 뷰어",
 };
 
