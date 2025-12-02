@@ -41,7 +41,7 @@ export default function Home() {
   const generateDeviceList = () => {
     const devices = ["all"];
     // Only devices 29, 30, 31
-    const deviceNumbers = [10, 11, 29, 30, 31];
+    const deviceNumbers = [29, 30, 31];
     for (const i of deviceNumbers) {
       const deviceNum = String(i).padStart(3, "0");
       devices.push(`kanaria-test-${deviceNum}`);
