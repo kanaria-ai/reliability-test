@@ -41,7 +41,7 @@ export default function Home() {
   const generateDeviceList = () => {
     const devices = ["all"];
     // Only devices 29, 30, 31
-    const deviceNumbers = [29, 30, 31];
+    const deviceNumbers = [10, 11, 29, 30, 31];
     for (const i of deviceNumbers) {
       const deviceNum = String(i).padStart(3, "0");
       devices.push(`kanaria-test-${deviceNum}`);
@@ -55,12 +55,12 @@ export default function Home() {
     fileType: "photos" | "json"
   ) => {
     if (!fromDate && !toDate) {
-      alert("⚠️ Please select at least one date (From or To)");
+      alert("⚠️ 최소한 하나의 날짜(시작일 또는 종료일)를 선택해주세요");
       return;
     }
 
     if (fromDate && toDate && fromDate > toDate) {
-      alert('⚠️ "From" date cannot be later than "To" date');
+      alert("⚠️ 시작일은 종료일보다 늦을 수 없습니다");
       return;
     }
 
@@ -88,15 +88,15 @@ export default function Home() {
 
       if (fileType === "photos") {
         setAllImages(data.files);
-        setImageCount(`✅ Loaded ${data.files.length} images`);
+        setImageCount(`✅ ${data.files.length}개의 이미지를 불러왔습니다`);
       } else {
         setAllJSONFiles(data.files);
-        setImageCount(`✅ Loaded ${data.files.length} JSON files`);
+        setImageCount(`✅ ${data.files.length}개의 JSON 파일을 불러왔습니다`);
       }
     } catch (error: any) {
       console.error("Error fetching files:", error);
       alert("S3에서 파일을 가져오는데 실패했습니다.");
-      setImageCount("❌ Error loading files");
+      setImageCount("❌ 파일 불러오기 실패");
     } finally {
       setIsLoading(false);
     }
@@ -108,7 +108,7 @@ export default function Home() {
 
   const handleRefresh = () => {
     if (!dateFrom && !dateTo) {
-      alert("⚠️ Please select a date range first");
+      alert("⚠️ 먼저 날짜 범위를 선택해주세요");
       return;
     }
     fetchFiles(dateFrom, dateTo, activeCategory);
@@ -120,7 +120,7 @@ export default function Home() {
     setAllImages([]);
     setAllJSONFiles([]);
     setSearchTerm("");
-    setImageCount('📅 Select a date range and click "Show" to load files');
+    setImageCount('📅 날짜 범위를 선택하고 "조회하기"를 클릭하세요');
   };
 
   const filteredImages = searchTerm
@@ -168,13 +168,13 @@ export default function Home() {
 
   const downloadAllJSONFiles = async () => {
     if (allJSONFiles.length === 0) {
-      alert("⚠️ No JSON files to download");
+      alert("⚠️ 다운로드할 JSON 파일이 없습니다");
       return;
     }
 
     const totalFiles = allJSONFiles.length;
     const proceed = confirm(
-      `📥 Download ${totalFiles} JSON files?\n\nFiles will be downloaded one by one. This may take a moment.`
+      `📥 ${totalFiles}개의 JSON 파일을 다운로드하시겠습니까?\n\n파일은 하나씩 다운로드됩니다. 시간이 걸릴 수 있습니다.`
     );
 
     if (!proceed) return;
@@ -195,11 +195,9 @@ export default function Home() {
     }
 
     if (failed === 0) {
-      alert(`✅ Successfully downloaded all ${downloaded} files!`);
+      alert(`✅ 모든 ${downloaded}개 파일을 성공적으로 다운로드했습니다!`);
     } else {
-      alert(
-        `⚠️ Download completed:\n✅ ${downloaded} succeeded\n❌ ${failed} failed`
-      );
+      alert(`⚠️ 다운로드 완료:\n✅ ${downloaded}개 성공\n❌ ${failed}개 실패`);
     }
   };
 
@@ -207,15 +205,15 @@ export default function Home() {
     if (activeCategory === "photos" && allImages.length > 0) {
       if (searchTerm) {
         setImageCount(
-          `🔍 Search results: ${filteredImages.length} of ${allImages.length} images`
+          `🔍 검색 결과: ${allImages.length}개 중 ${filteredImages.length}개 이미지`
         );
       } else {
-        setImageCount(`✅ Loaded ${allImages.length} images`);
+        setImageCount(`✅ ${allImages.length}개의 이미지를 불러왔습니다`);
       }
     } else if (activeCategory === "json" && allJSONFiles.length > 0) {
-      setImageCount(`✅ Loaded ${allJSONFiles.length} JSON files`);
+      setImageCount(`✅ ${allJSONFiles.length}개의 JSON 파일을 불러왔습니다`);
     } else {
-      setImageCount('📅 Select a date range and click "Show" to load files');
+      setImageCount('📅 날짜 범위를 선택하고 "조회하기"를 클릭하세요');
     }
   }, [
     activeCategory,
@@ -282,7 +280,7 @@ export default function Home() {
           }`}
           onClick={() => setActiveCategory("photos")}
         >
-          📸 Photos
+          📸 사진
         </button>
         <button
           className={`category-tab ${
@@ -290,15 +288,13 @@ export default function Home() {
           }`}
           onClick={() => setActiveCategory("json")}
         >
-          📄 JSON Files
+          📄 JSON 파일
         </button>
       </div>
 
       {/* Device Selector */}
       <div className="controls" style={{ marginTop: "10px" }}>
-        <label style={{ marginRight: "10px", fontWeight: 600 }}>
-          🔧 Device:
-        </label>
+        <label style={{ marginRight: "10px", fontWeight: 600 }}>🔧 장치:</label>
         <select
           id="device-selector"
           value={selectedDevice}
@@ -313,7 +309,7 @@ export default function Home() {
         >
           {generateDeviceList().map((device) => (
             <option key={device} value={device}>
-              {device === "all" ? "All devices (slower)" : device}
+              {device === "all" ? "모든 장치 (느림)" : device}
             </option>
           ))}
         </select>
@@ -363,7 +359,7 @@ export default function Home() {
             fontSize: "14px",
           }}
         >
-          {isLoading ? "Loading..." : "조회하기"}
+          {isLoading ? "로딩 중..." : "조회하기"}
         </button>
         <button
           id="date-reset-btn"
@@ -428,7 +424,7 @@ export default function Home() {
               <div
                 style={{ textAlign: "center", padding: "40px", color: "#999" }}
               >
-                No images match your search
+                검색 결과가 없습니다
               </div>
             ) : (
               filteredImages.map((file) => {
@@ -482,7 +478,7 @@ export default function Home() {
                   className="download-all-btn"
                   onClick={downloadAllJSONFiles}
                 >
-                  📥 Download All ({allJSONFiles.length} files)
+                  📥 전체 다운로드 ({allJSONFiles.length}개 파일)
                 </button>
                 {allJSONFiles.map((file) => {
                   const fileSize = (file.Size / 1024).toFixed(2);
@@ -507,7 +503,7 @@ export default function Home() {
                         className="download-btn"
                         onClick={() => downloadFile(file.Key)}
                       >
-                        Download
+                        다운로드
                       </button>
                     </div>
                   );
