@@ -329,6 +329,10 @@ export default function Home() {
             padding: "8px",
             border: "1px solid #ddd",
             borderRadius: "5px",
+            fontSize: "14px",
+            cursor: "pointer",
+            position: "relative",
+            zIndex: 1,
           }}
         />
         <span style={{ margin: "0 10px" }}>~</span>
@@ -341,6 +345,10 @@ export default function Home() {
             padding: "8px",
             border: "1px solid #ddd",
             borderRadius: "5px",
+            fontSize: "14px",
+            cursor: "pointer",
+            position: "relative",
+            zIndex: 1,
           }}
         />
         <button
