@@ -24,6 +24,10 @@ export default function Home() {
   const [modalImage, setModalImage] = useState<string | null>(null);
   const [modalInfo, setModalInfo] = useState<string>("");
   const [imageCount, setImageCount] = useState("");
+  const [isAdminMode, setIsAdminMode] = useState(false);
+  const [showAdminModal, setShowAdminModal] = useState(false);
+  const [adminPassword, setAdminPassword] = useState("");
+  const [adminError, setAdminError] = useState("");
 
   const bucketName =
     process.env.NEXT_PUBLIC_AWS_S3_BUCKET_NAME || "kanaria-prototype-test";
@@ -40,13 +44,48 @@ export default function Home() {
 
   const generateDeviceList = () => {
     const devices = ["all"];
-    // Only devices 29, 30, 31
-    const deviceNumbers = [29, 30, 31];
-    for (const i of deviceNumbers) {
-      const deviceNum = String(i).padStart(3, "0");
-      devices.push(`kanaria-test-${deviceNum}`);
+
+    if (isAdminMode) {
+      // Admin mode: devices 001 to 031
+      for (let i = 1; i <= 31; i++) {
+        const deviceNum = String(i).padStart(3, "0");
+        devices.push(`kanaria-test-${deviceNum}`);
+      }
+    } else {
+      // Normal mode: Only devices 29, 30, 31
+      const deviceNumbers = [29, 30, 31];
+      for (const i of deviceNumbers) {
+        const deviceNum = String(i).padStart(3, "0");
+        devices.push(`kanaria-test-${deviceNum}`);
+      }
     }
+
     return devices;
+  };
+
+  const handleAdminLogin = () => {
+    setShowAdminModal(true);
+    setAdminPassword("");
+    setAdminError("");
+  };
+
+  const handleAdminSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    setAdminError("");
+
+    if (adminPassword === "kanaria123") {
+      setIsAdminMode(true);
+      setShowAdminModal(false);
+      setAdminPassword("");
+      setSelectedDevice("all"); // Reset to all devices
+    } else {
+      setAdminError("비밀번호가 올바르지 않습니다.");
+    }
+  };
+
+  const handleAdminLogout = () => {
+    setIsAdminMode(false);
+    setSelectedDevice("all"); // Reset to all devices
   };
 
   const fetchFiles = async (
@@ -225,14 +264,20 @@ export default function Home() {
 
   useEffect(() => {
     const handleEscape = (e: KeyboardEvent) => {
-      if (e.key === "Escape" && modalImage) {
-        closeModal();
+      if (e.key === "Escape") {
+        if (modalImage) {
+          closeModal();
+        } else if (showAdminModal) {
+          setShowAdminModal(false);
+          setAdminPassword("");
+          setAdminError("");
+        }
       }
     };
 
     document.addEventListener("keydown", handleEscape);
     return () => document.removeEventListener("keydown", handleEscape);
-  }, [modalImage]);
+  }, [modalImage, showAdminModal]);
 
   const handleLogout = async () => {
     try {
@@ -254,22 +299,71 @@ export default function Home() {
           marginBottom: "20px",
         }}
       >
-        <h1 style={{ margin: 0 }}>카나리아 테스트 뷰어</h1>
-        <button
-          onClick={handleLogout}
-          style={{
-            padding: "8px 16px",
-            backgroundColor: "#666",
-            color: "white",
-            border: "none",
-            borderRadius: "5px",
-            cursor: "pointer",
-            fontSize: "14px",
-            fontWeight: 600,
-          }}
-        >
-          로그아웃
-        </button>
+        <h1 style={{ margin: 0 }}>
+          카나리아 테스트 뷰어
+          {isAdminMode && (
+            <span
+              style={{
+                marginLeft: "10px",
+                fontSize: "14px",
+                color: "#4CAF50",
+                fontWeight: 600,
+              }}
+            >
+              [관리자 모드]
+            </span>
+          )}
+        </h1>
+        <div style={{ display: "flex", gap: "10px", alignItems: "center" }}>
+          {isAdminMode ? (
+            <button
+              onClick={handleAdminLogout}
+              style={{
+                padding: "8px 16px",
+                backgroundColor: "#ff9800",
+                color: "white",
+                border: "none",
+                borderRadius: "5px",
+                cursor: "pointer",
+                fontSize: "14px",
+                fontWeight: 600,
+              }}
+            >
+              관리자 모드 종료
+            </button>
+          ) : (
+            <button
+              onClick={handleAdminLogin}
+              style={{
+                padding: "8px 16px",
+                backgroundColor: "#2196F3",
+                color: "white",
+                border: "none",
+                borderRadius: "5px",
+                cursor: "pointer",
+                fontSize: "14px",
+                fontWeight: 600,
+              }}
+            >
+              관리자 모드
+            </button>
+          )}
+          <button
+            onClick={handleLogout}
+            style={{
+              padding: "8px 16px",
+              backgroundColor: "#666",
+              color: "white",
+              border: "none",
+              borderRadius: "5px",
+              cursor: "pointer",
+              fontSize: "14px",
+              fontWeight: 600,
+            }}
+          >
+            로그아웃
+          </button>
+        </div>
       </div>
 
       {/* Category Tabs */}
@@ -522,7 +616,7 @@ export default function Home() {
         )}
       </div>
 
-      {/* Modal */}
+      {/* Image Modal */}
       {modalImage && (
         <div className="modal active" onClick={closeModal}>
           <span className="close-btn" onClick={closeModal}>
@@ -540,6 +634,143 @@ export default function Home() {
               dangerouslySetInnerHTML={{ __html: modalInfo }}
               onClick={(e) => e.stopPropagation()}
             />
+          </div>
+        </div>
+      )}
+
+      {/* Admin Mode Password Modal */}
+      {showAdminModal && (
+        <div
+          style={{
+            position: "fixed",
+            top: 0,
+            left: 0,
+            width: "100%",
+            height: "100%",
+            backgroundColor: "rgba(0,0,0,0.5)",
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+            zIndex: 2000,
+          }}
+          onClick={() => {
+            setShowAdminModal(false);
+            setAdminPassword("");
+            setAdminError("");
+          }}
+        >
+          <div
+            style={{
+              backgroundColor: "white",
+              padding: "40px",
+              borderRadius: "10px",
+              boxShadow: "0 2px 10px rgba(0,0,0,0.1)",
+              width: "100%",
+              maxWidth: "400px",
+            }}
+            onClick={(e) => e.stopPropagation()}
+          >
+            <h2
+              style={{
+                textAlign: "center",
+                marginBottom: "30px",
+                color: "#333",
+                fontSize: "24px",
+              }}
+            >
+              🔐 관리자 모드
+            </h2>
+
+            <form onSubmit={handleAdminSubmit}>
+              <div style={{ marginBottom: "20px" }}>
+                <label
+                  htmlFor="admin-password"
+                  style={{
+                    display: "block",
+                    marginBottom: "8px",
+                    fontWeight: 600,
+                    color: "#555",
+                  }}
+                >
+                  비밀번호
+                </label>
+                <input
+                  id="admin-password"
+                  type="password"
+                  value={adminPassword}
+                  onChange={(e) => {
+                    setAdminPassword(e.target.value);
+                    setAdminError("");
+                  }}
+                  required
+                  autoFocus
+                  style={{
+                    width: "100%",
+                    padding: "12px",
+                    border: "1px solid #ddd",
+                    borderRadius: "5px",
+                    fontSize: "16px",
+                    boxSizing: "border-box",
+                  }}
+                  placeholder="관리자 비밀번호를 입력하세요"
+                />
+              </div>
+
+              {adminError && (
+                <div
+                  style={{
+                    padding: "12px",
+                    backgroundColor: "#fee",
+                    color: "#c33",
+                    borderRadius: "5px",
+                    marginBottom: "20px",
+                    fontSize: "14px",
+                  }}
+                >
+                  {adminError}
+                </div>
+              )}
+
+              <div style={{ display: "flex", gap: "10px" }}>
+                <button
+                  type="button"
+                  onClick={() => {
+                    setShowAdminModal(false);
+                    setAdminPassword("");
+                    setAdminError("");
+                  }}
+                  style={{
+                    flex: 1,
+                    padding: "12px",
+                    backgroundColor: "#ccc",
+                    color: "white",
+                    border: "none",
+                    borderRadius: "5px",
+                    fontSize: "16px",
+                    fontWeight: 600,
+                    cursor: "pointer",
+                  }}
+                >
+                  취소
+                </button>
+                <button
+                  type="submit"
+                  style={{
+                    flex: 1,
+                    padding: "12px",
+                    backgroundColor: "#2196F3",
+                    color: "white",
+                    border: "none",
+                    borderRadius: "5px",
+                    fontSize: "16px",
+                    fontWeight: 600,
+                    cursor: "pointer",
+                  }}
+                >
+                  확인
+                </button>
+              </div>
+            </form>
           </div>
         </div>
       )}
