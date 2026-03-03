@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
+import { NORMAL_MODE_DEVICES, ADMIN_MODE_DEVICE_RANGE } from "./config/constants";
 
 interface S3File {
   Key: string;
@@ -47,14 +48,13 @@ export default function Home() {
 
     if (isAdminMode) {
       // Admin mode: devices 001 to 031
-      for (let i = 1; i <= 31; i++) {
+      for (let i = ADMIN_MODE_DEVICE_RANGE.START; i <= ADMIN_MODE_DEVICE_RANGE.END; i++) {
         const deviceNum = String(i).padStart(3, "0");
         devices.push(`kanaria-test-${deviceNum}`);
       }
     } else {
       // Normal mode: Only devices 29, 30, 31
-      const deviceNumbers = [29, 30, 31];
-      for (const i of deviceNumbers) {
+      for (const i of NORMAL_MODE_DEVICES) {
         const deviceNum = String(i).padStart(3, "0");
         devices.push(`kanaria-test-${deviceNum}`);
       }
@@ -116,6 +116,7 @@ export default function Home() {
           toDate,
           selectedDevice,
           fileType,
+          isAdminMode,
         }),
       });
 
